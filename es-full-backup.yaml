@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"component":"elasticsearch","role":"full"},"name":"es-full","namespace":"logging"},"spec":{"replicas":3,"selector":{"matchLabels":{"component":"elasticsearch","role":"full"}},"serviceName":"elasticsearch-logging","template":{"metadata":{"labels":{"component":"elasticsearch","role":"full"}},"spec":{"affinity":{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"role","operator":"In","values":["full"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}},"containers":[{"env":[{"name":"NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"NODE_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"CLUSTER_NAME","value":"myesdb"},{"name":"ES_JAVA_OPTS","value":"-Xms1g -Xmx1g"},{"name":"NETWORK_HOST","value":"_site_,_lo_"},{"name":"PROCESSORS","valueFrom":{"resourceFieldRef":{"resource":"limits.cpu"}}}],"image":"carlosedp/docker-elasticsearch-kubernetes:6.2.3","livenessProbe":{"initialDelaySeconds":240,"periodSeconds":30,"tcpSocket":{"port":"transport"}},"name":"es-full","ports":[{"containerPort":9300,"name":"transport"},{"containerPort":9200,"name":"http"}],"resources":{"limits":{"cpu":2},"requests":{"cpu":1}},"volumeMounts":[{"mountPath":"/elasticsearch/config/elasticsearch.yml","name":"config","subPath":"elasticsearch.yml"},{"mountPath":"/data","name":"storage-full"}]}],"initContainers":[{"command":["sysctl","-w","vm.max_map_count=262144"],"image":"busybox:1.27.2","name":"init-sysctl","securityContext":{"privileged":true}}],"volumes":[{"configMap":{"name":"es-configmap"},"name":"config"}]}},"volumeClaimTemplates":[{"metadata":{"name":"storage-full"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"20Gi"}}}}]}}
+  creationTimestamp: 2018-04-27T07:00:35Z
+  generation: 12
+  labels:
+    component: elasticsearch
+    role: full
+  name: es-full
+  namespace: logging
+  resourceVersion: "3799085"
+  selfLink: /apis/apps/v1/namespaces/logging/statefulsets/es-full
+  uid: af785f09-49e8-11e8-841e-001e0631dd0d
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      component: elasticsearch
+      role: full
+  serviceName: elasticsearch-logging
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        component: elasticsearch
+        role: full
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: role
+                  operator: In
+                  values:
+                  - full
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: CLUSTER_NAME
+          value: myesdb
+        - name: ES_JAVA_OPTS
+          value: -Xms1g -Xmx1g
+        - name: NETWORK_HOST
+          value: _site_,_lo_
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              divisor: "0"
+              resource: limits.cpu
+        image: carlosedp/docker-elasticsearch-kubernetes:6.2.3
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 240
+          periodSeconds: 30
+          successThreshold: 1
+          tcpSocket:
+            port: transport
+          timeoutSeconds: 1
+        name: es-full
+        ports:
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        - containerPort: 9200
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+          requests:
+            cpu: "1"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /elasticsearch/config/elasticsearch.yml
+          name: config
+          subPath: elasticsearch.yml
+        - mountPath: /data
+          name: storage-full
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: busybox:1.27.2
+        imagePullPolicy: IfNotPresent
+        name: init-sysctl
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: es-configmap
+        name: config
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      name: storage-full
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+    status:
+      phase: Pending
+status:
+  collisionCount: 0
+  currentReplicas: 3
+  currentRevision: es-full-6ccd948696
+  observedGeneration: 12
+  readyReplicas: 3
+  replicas: 3
+  updateRevision: es-full-6ccd948696

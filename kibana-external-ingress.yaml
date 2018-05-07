@@ -10,11 +10,11 @@ metadata:
     #traefik.frontend.redirect.entryPoint: https
     traefik.frontend.redirect.regex: ^http://(.*)
     traefik.frontend.redirect.replacement: https://$1
-    ingress.kubernetes.io/auth-type: basic
-    ingress.kubernetes.io/auth-secret: dashboard-auth
+    # ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: dashboard-auth
 spec:
   rules:
-  - host: kibana.cloud.carlosedp.com
+  - host: kibana.jesses.io
     http:
       paths:
       - path: /

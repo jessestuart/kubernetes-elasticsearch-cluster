@@ -421,7 +421,7 @@ data:
         </pattern>
         <pattern>
           format regexp
-          expression /^time="(?<time>[^\]]*)" level=(?<loglevel>[^\]]*) msg="(?<message>[^\]]*)"$/ 
+          expression /^time="(?<time>[^\]]*)" level=(?<loglevel>[^\]]*) msg="(?<message>[^\]]*)"$/
           time_key time
           time_format %Y-%m-%dT%H:%M:%SZ
         </pattern>
@@ -432,7 +432,7 @@ data:
       @type elasticsearch
       @log_level info
       include_tag_key true
-      host elasticsearch
+      host elasticsearch.logging.svc
       port 9200
       logstash_format true
       <buffer>
@@ -442,10 +442,20 @@ data:
         retry_type exponential_backoff
         flush_thread_count 2
         flush_interval 5s
-        retry_forever
+        # retry_forever
         retry_max_interval 30
         chunk_limit_size 8M
         queue_limit_length 256
         overflow_action block
       </buffer>
+    </match>
+    <match **>
+      type logzio_buffered
+      endpoint_url https://listener.logz.io:8071?token=ppOEdrAtsLGLYeplDhBbsmvZNCgxBTAh&type=my_type
+      output_include_time true
+      output_include_tags true
+      buffer_type    file
+      buffer_path    /path/to/buffer/file
+      flush_interval 10s
+      buffer_chunk_limit 1m   # Logz.io has bulk limit of 10M. We recommend set this to 1M, to avoid oversized bulks
     </match>

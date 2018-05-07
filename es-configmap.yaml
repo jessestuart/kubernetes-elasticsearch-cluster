@@ -1,4 +1,8 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es-configmap
+  namespace: logging
 data:
   elasticsearch.yml: |
     cluster:
@@ -11,7 +15,7 @@ data:
       ingest: ${NODE_INGEST}
       max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES}
 
-    processors: ${PROCESSORS:1}
+    processors: ${PROCESSORS:2}
 
     network.host: ${NETWORK_HOST}
 
@@ -42,8 +46,3 @@ data:
     cluster.routing.allocation.enable: all
     cluster.routing.rebalance.enable: all
     cluster.routing.allocation.allow_rebalance: indices_all_active
-
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  name: es-configmap

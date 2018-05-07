@@ -22,7 +22,7 @@ metadata:
     traefik.frontend.rule.type: PathPrefix
 spec:
   rules:
-  - host: elasticsearch.internal.carlosedp.com
+  - host: elasticsearch.internal.jesses.io
     http:
       paths:
       - path: /

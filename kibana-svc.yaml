@@ -24,7 +24,7 @@ metadata:
     traefik.frontend.rule.type: PathPrefix
 spec:
   rules:
-  - host: kibana.internal.carlosedp.com
+  - host: kibana.internal.jesses.io
     http:
       paths:
       - path: /

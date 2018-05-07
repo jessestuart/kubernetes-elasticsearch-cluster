@@ -56,7 +56,7 @@ spec:
   selector:
     component: elk
     role: cerebro
-  type: NodePort
+  type: LoadBalancer
   ports:
   - name: http
     port: 80
@@ -71,7 +71,7 @@ metadata:
     traefik.frontend.rule.type: PathPrefix
 spec:
   rules:
-  - host: cerebro.internal.carlosedp.com
+  - host: cerebro.internal.jesses.io
     http:
       paths:
       - path: /
